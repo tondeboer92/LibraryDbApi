@@ -17,7 +17,7 @@ namespace LibraryDbApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -34,7 +34,7 @@ namespace LibraryDbApi.Migrations
 
                     b.HasIndex("BooksBookId");
 
-                    b.ToTable("AuthorBook");
+                    b.ToTable("BookAuthor", (string)null);
                 });
 
             modelBuilder.Entity("LibraryDbApi.Models.Author", b =>
@@ -66,11 +66,12 @@ namespace LibraryDbApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
-                    b.Property<int>("ISBN")
+                    b.Property<int>("Copies")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsBorrowed")
-                        .HasColumnType("bit");
+                    b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PublicationYear")
                         .HasColumnType("int");
@@ -104,7 +105,7 @@ namespace LibraryDbApi.Migrations
                     b.Property<DateTime>("LoanDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ReturnDate")
+                    b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("BorrowId");
@@ -125,11 +126,9 @@ namespace LibraryDbApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BorrowerId"));
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BorrowerId");
@@ -161,7 +160,7 @@ namespace LibraryDbApi.Migrations
                         .IsRequired();
 
                     b.HasOne("LibraryDbApi.Models.Borrower", "Borrower")
-                        .WithMany("Borrows")
+                        .WithMany()
                         .HasForeignKey("BorrowerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -172,11 +171,6 @@ namespace LibraryDbApi.Migrations
                 });
 
             modelBuilder.Entity("LibraryDbApi.Models.Book", b =>
-                {
-                    b.Navigation("Borrows");
-                });
-
-            modelBuilder.Entity("LibraryDbApi.Models.Borrower", b =>
                 {
                     b.Navigation("Borrows");
                 });

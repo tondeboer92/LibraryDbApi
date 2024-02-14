@@ -6,14 +6,9 @@ namespace LibraryDbApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BorrowersController : ControllerBase
+    public class BorrowersController(LibraryDbContext context) : ControllerBase
     {
-        private readonly LibraryDbContext _context;
-
-        public BorrowersController(LibraryDbContext context)
-        {
-            _context = context;
-        }
+        private readonly LibraryDbContext _context = context;
 
         // GET: api/Borrowers
         [HttpGet]
@@ -39,12 +34,17 @@ namespace LibraryDbApi.Controllers
         // PUT: api/Borrowers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBorrower(int id, Borrower borrower)
+        public async Task<IActionResult> PutBorrower(int id, BorrowerDTO borrowerDto)
         {
-            if (id != borrower.BorrowerId)
+            var borrower = await _context.Borrowers.FindAsync(id);
+            
+            if (borrower == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+
+            borrower.FirstName = borrowerDto.FirstName;
+            borrower.LastName = borrowerDto.LastName;
 
             _context.Entry(borrower).State = EntityState.Modified;
 

@@ -6,14 +6,9 @@ namespace LibraryDbApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorsController : ControllerBase
+    public class AuthorsController(LibraryDbContext context) : ControllerBase
     {
-        private readonly LibraryDbContext _context;
-
-        public AuthorsController(LibraryDbContext context)
-        {
-            _context = context;
-        }
+        private readonly LibraryDbContext _context = context;
 
         // GET: api/Authors
         [HttpGet]
@@ -39,14 +34,17 @@ namespace LibraryDbApi.Controllers
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
+        public async Task<IActionResult> PutAuthor(int id, AuthorDTO authorDto)
         {
-            if (id != author.AuthorId)
+            var author = await _context.Authors.FindAsync(id);
+
+            if (author == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(author).State = EntityState.Modified;
+            author.FirstName = authorDto.FirstName;
+            author.LastName = authorDto.LastName;
 
             try
             {
@@ -64,14 +62,20 @@ namespace LibraryDbApi.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction(nameof(GetAuthor), new { id = author.AuthorId }, author);
         }
 
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<Author>> PostAuthor(AuthorDTO authorDto)
         {
+            var author = new Author
+            {
+                FirstName = authorDto.FirstName,
+                LastName = authorDto.LastName
+            };
+
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
 

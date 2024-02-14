@@ -15,9 +15,9 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryDbConnection")));
 
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 

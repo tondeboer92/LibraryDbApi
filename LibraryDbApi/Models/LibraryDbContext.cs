@@ -12,17 +12,17 @@ namespace LibraryDbApi.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-        base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.Authors)
                 .WithMany(a => a.Books)
                 .UsingEntity(j => j.ToTable("BookAuthor"));
-                
+
 
         }
 
-        public DbSet<Borrower> Borrowers { get; set; } 
+        public DbSet<Borrower> Borrowers { get; set; }
         public DbSet<Borrow> Borrows { get; set; }
     }
 }
