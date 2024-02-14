@@ -22,7 +22,7 @@ namespace LibraryDbApi.Models
 
         }
 
-        public DbSet<Borrower> Borrowers { get; set; }
+        public DbSet<Borrower> Borrowers { get; set; } 
         public DbSet<Borrow> Borrows { get; set; }
     }
 }
