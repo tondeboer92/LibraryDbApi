@@ -38,8 +38,7 @@ namespace LibraryDbApi.Controllers
             {
                 BookId = borrow.BookId,
                 BorrowerId = borrow.BorrowerId,
-                LoanDate = borrow.LoanDate,
-                ReturnDate = borrow.ReturnDate
+                LoanDate = borrow.LoanDate
             };
 
             return CreatedAtAction(nameof(GetBorrow), new { id = borrow.BorrowId }, borrowDto);
@@ -59,7 +58,8 @@ namespace LibraryDbApi.Controllers
             }
 
             borrow.LoanDate = borrowDto.LoanDate;
-            borrow.ReturnDate = borrowDto.ReturnDate;
+            borrow.BookId = borrowDto.BookId;
+            borrow.BorrowerId = borrowDto.BorrowerId;
 
             _context.Entry(borrow).State = EntityState.Modified;
 
